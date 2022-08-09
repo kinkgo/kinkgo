@@ -1,0 +1,20 @@
+name: Linters
+
+on:
+  pull_request: {}
+
+jobs:
+  golangci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Run golangci-lint
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          fail_on_error: true
+          golangci_lint_flags: "--timeout 5m --new-from-rev ${{ github.event.pull_request.base.ref }}"
