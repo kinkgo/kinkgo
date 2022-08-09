@@ -1,0 +1,10 @@
+# Temporary files
+.DS_Store/
+.local/
+
+# IDE files
+.idea/
+.vscode/
+
+# Build directories
+dist/
