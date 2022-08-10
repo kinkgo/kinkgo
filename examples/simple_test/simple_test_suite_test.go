@@ -20,9 +20,7 @@ var (
 
 func TestSimpleTest(t *testing.T) {
 	// Define test configuration
-	cfg := kinkgo.Config{
-		Labels: []string{"simple_test", "extra_label"},
-	}
+	cfg := kinkgo.NewNopEnvironmentConfig("simple_test", "extra_label")
 
 	// Run test suite
 	kinkgo.Run(t, "SimpleTest Suite", new(SimpleTestSuite), cfg)

@@ -14,12 +14,12 @@ type TestSuite interface {
 }
 
 // Run is a simple wrapper around ginkgo.RunSpecs that configures the runner for the kinkgo framework.
-func Run(t *testing.T, description string, suite TestSuite, cfg Config) {
+func Run[E Environment](t *testing.T, description string, suite TestSuite, cfg Config[E]) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
 
 	suiteCfg, reporterCfg := ginkgo.GinkgoConfiguration()
 
-	// hook definitions
+	// ginkgo configuration hook definitions
 
 	// modify suite config
 	if hook, ok := suite.(ModifySuiteConfigHook); ok {
@@ -31,5 +31,26 @@ func Run(t *testing.T, description string, suite TestSuite, cfg Config) {
 		reporterCfg = ginkgotypes.ReporterConfig(hook.ModifyReporterConfig(ReporterConfig(reporterCfg)))
 	}
 
+	// Environment initialization
+
+	env := cfg.Environment
+
+	// Start Environment
+	//
+	// Since the environment operations are not part of the ginkgo framework, we need to validate the environment
+	// using testing.T to make sure not panic ginkgo framework.
+	if err := env.Start(); err != nil {
+		t.Fatalf("failed to start environment: %v", err)
+	}
+
+	// Run ginkgo specs
 	ginkgo.RunSpecs(t, description, ginkgo.Label(cfg.Labels...), suiteCfg, reporterCfg)
+
+	// Stop Environment
+	//
+	// Since the environment operations are not part of the ginkgo framework, we need to validate the environment
+	// using testing.T to make sure not panic ginkgo framework.
+	if err := env.Stop(); err != nil {
+		t.Fatalf("failed to stop environment: %v", err)
+	}
 }
