@@ -21,7 +21,13 @@ var (
 )
 
 func TestSimpleTest(t *testing.T) {
-	kinkgo.Run(t, "SimpleTest Suite", new(SimpleTestSuite), "simple_test", "extra_label")
+	// Define test configuration
+	cfg := kinkgo.Config{
+		Labels: []string{"simple_test", "extra_label"},
+	}
+
+	// Run test suite
+	kinkgo.Run(t, "SimpleTest Suite", new(SimpleTestSuite), cfg)
 }
 
 type SimpleTestSuite struct{}

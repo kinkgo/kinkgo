@@ -17,7 +17,7 @@ type TestSuite interface {
 }
 
 // Run is a simple wrapper around ginkgo.RunSpecs that configures the runner for the kinkgo framework.
-func Run(t *testing.T, description string, suite TestSuite, labels ...string) {
+func Run(t *testing.T, description string, suite TestSuite, cfg Config) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
 
 	suiteCfg, reporterCfg := ginkgo.GinkgoConfiguration()
@@ -34,5 +34,5 @@ func Run(t *testing.T, description string, suite TestSuite, labels ...string) {
 		reporterCfg = ginkgotypes.ReporterConfig(hook.ModifyReporterConfig(kinkgotypes.ReporterConfig(reporterCfg)))
 	}
 
-	ginkgo.RunSpecs(t, description, ginkgo.Label(labels...), suiteCfg, reporterCfg)
+	ginkgo.RunSpecs(t, description, ginkgo.Label(cfg.Labels...), suiteCfg, reporterCfg)
 }
