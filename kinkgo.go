@@ -17,6 +17,20 @@ type TestSuite interface {
 func Run[E Environment](t *testing.T, description string, suite TestSuite, cfg Config[E]) {
 	gomega.RegisterFailHandler(ginkgo.Fail)
 
+	// Get modified configuration for the test suite.
+	suiteCfg, reporterCfg := getGinkgoConfiguration(suite)
+
+	// Environment initialization
+	startEnv(t, suite, cfg.Environment)
+
+	// Run ginkgo specs
+	ginkgo.RunSpecs(t, description, ginkgo.Label(cfg.Labels...), suiteCfg, reporterCfg)
+
+	// Environment stop
+	stopEnv(t, suite, cfg.Environment)
+}
+
+func getGinkgoConfiguration(suite TestSuite) (ginkgotypes.SuiteConfig, ginkgotypes.ReporterConfig) {
 	suiteCfg, reporterCfg := ginkgo.GinkgoConfiguration()
 
 	// ginkgo configuration hook definitions
@@ -31,10 +45,10 @@ func Run[E Environment](t *testing.T, description string, suite TestSuite, cfg C
 		reporterCfg = ginkgotypes.ReporterConfig(hook.ModifyReporterConfig(ReporterConfig(reporterCfg)))
 	}
 
-	// Environment initialization
+	return suiteCfg, reporterCfg
+}
 
-	env := cfg.Environment
-
+func startEnv[E Environment](t *testing.T, suite TestSuite, env E) {
 	// Environment pre start hook
 	if hook, ok := suite.(EnvironmentPreStartHook[E]); ok {
 		hook.EnvironmentPreStart(&env)
@@ -52,10 +66,9 @@ func Run[E Environment](t *testing.T, description string, suite TestSuite, cfg C
 	if hook, ok := suite.(EnvironmentPostStartHook[E]); ok {
 		hook.EnvironmentPostStart(&env)
 	}
+}
 
-	// Run ginkgo specs
-	ginkgo.RunSpecs(t, description, ginkgo.Label(cfg.Labels...), suiteCfg, reporterCfg)
-
+func stopEnv[E Environment](t *testing.T, suite TestSuite, env E) {
 	// Environment pre stop hook
 	if hook, ok := suite.(EnvironmentPreStopHook[E]); ok {
 		hook.EnvironmentPreStop(&env)
