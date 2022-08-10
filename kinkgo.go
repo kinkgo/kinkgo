@@ -35,6 +35,11 @@ func Run[E Environment](t *testing.T, description string, suite TestSuite, cfg C
 
 	env := cfg.Environment
 
+	// Environment pre start hook
+	if hook, ok := suite.(EnvironmentPreStartHook[E]); ok {
+		hook.EnvironmentPreStart(&env)
+	}
+
 	// Start Environment
 	//
 	// Since the environment operations are not part of the ginkgo framework, we need to validate the environment
@@ -43,8 +48,18 @@ func Run[E Environment](t *testing.T, description string, suite TestSuite, cfg C
 		t.Fatalf("failed to start environment: %v", err)
 	}
 
+	// Environment post start hook
+	if hook, ok := suite.(EnvironmentPostStartHook[E]); ok {
+		hook.EnvironmentPostStart(&env)
+	}
+
 	// Run ginkgo specs
 	ginkgo.RunSpecs(t, description, ginkgo.Label(cfg.Labels...), suiteCfg, reporterCfg)
+
+	// Environment pre stop hook
+	if hook, ok := suite.(EnvironmentPreStopHook[E]); ok {
+		hook.EnvironmentPreStop(&env)
+	}
 
 	// Stop Environment
 	//
@@ -52,5 +67,10 @@ func Run[E Environment](t *testing.T, description string, suite TestSuite, cfg C
 	// using testing.T to make sure not panic ginkgo framework.
 	if err := env.Stop(); err != nil {
 		t.Fatalf("failed to stop environment: %v", err)
+	}
+
+	// Environment post stop hook
+	if hook, ok := suite.(EnvironmentPostStopHook[E]); ok {
+		hook.EnvironmentPostStop(&env)
 	}
 }

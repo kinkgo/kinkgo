@@ -1,5 +1,7 @@
 package kinkgo
 
+import "fmt"
+
 type Environment interface {
 	// Description returns a description of the environment.
 	Description() string
@@ -22,10 +24,12 @@ func (n NopEnvironment) Description() string {
 
 func (n NopEnvironment) Start() error {
 	// no-op environment. no need to start anything.
+	fmt.Println("no-op environment started")
 	return nil
 }
 
 func (n NopEnvironment) Stop() error {
 	// no-op environment. no need to stop anything.
+	fmt.Println("no-op environment stopped")
 	return nil
 }
