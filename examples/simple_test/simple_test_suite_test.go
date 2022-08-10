@@ -1,6 +1,7 @@
 package simple_test_test
 
 import (
+	"fmt"
 	"testing"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -14,8 +15,12 @@ var (
 	_ kinkgo.TestSuite = new(SimpleTestSuite)
 
 	// Hooks
-	_ kinkgo.ModifySuiteConfigHook    = new(SimpleTestSuite)
-	_ kinkgo.ModifyReporterConfigHook = new(SimpleTestSuite)
+	_ kinkgo.ModifySuiteConfigHook                           = new(SimpleTestSuite)
+	_ kinkgo.ModifyReporterConfigHook                        = new(SimpleTestSuite)
+	_ kinkgo.EnvironmentPreStartHook[kinkgo.NopEnvironment]  = new(SimpleTestSuite)
+	_ kinkgo.EnvironmentPostStartHook[kinkgo.NopEnvironment] = new(SimpleTestSuite)
+	_ kinkgo.EnvironmentPreStopHook[kinkgo.NopEnvironment]   = new(SimpleTestSuite)
+	_ kinkgo.EnvironmentPostStopHook[kinkgo.NopEnvironment]  = new(SimpleTestSuite)
 )
 
 func TestSimpleTest(t *testing.T) {
@@ -27,6 +32,22 @@ func TestSimpleTest(t *testing.T) {
 }
 
 type SimpleTestSuite struct{}
+
+func (s *SimpleTestSuite) EnvironmentPreStart(env *kinkgo.NopEnvironment) {
+	fmt.Printf("%s: environment pre start\n", env.Description())
+}
+
+func (s *SimpleTestSuite) EnvironmentPostStart(env *kinkgo.NopEnvironment) {
+	fmt.Printf("%s: environment post start\n", env.Description())
+}
+
+func (s *SimpleTestSuite) EnvironmentPreStop(env *kinkgo.NopEnvironment) {
+	fmt.Printf("%s: environment pre stop\n", env.Description())
+}
+
+func (s *SimpleTestSuite) EnvironmentPostStop(env *kinkgo.NopEnvironment) {
+	fmt.Printf("%s: environment post stop\n", env.Description())
+}
 
 func (s *SimpleTestSuite) ModifyReporterConfig(cfg kinkgo.ReporterConfig) kinkgo.ReporterConfig {
 	// modify reporter config to use verbose output
