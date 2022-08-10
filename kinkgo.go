@@ -3,9 +3,6 @@ package kinkgo
 import (
 	"testing"
 
-	"github.com/kinkgo/kinkgo/hooks"
-	kinkgotypes "github.com/kinkgo/kinkgo/types"
-
 	"github.com/onsi/ginkgo/v2"
 	ginkgotypes "github.com/onsi/ginkgo/v2/types"
 	"github.com/onsi/gomega"
@@ -25,13 +22,13 @@ func Run(t *testing.T, description string, suite TestSuite, cfg Config) {
 	// hook definitions
 
 	// modify suite config
-	if hook, ok := suite.(hooks.ModifySuiteConfigHook); ok {
-		suiteCfg = ginkgotypes.SuiteConfig(hook.ModifySuiteConfig(kinkgotypes.SuiteConfig(suiteCfg)))
+	if hook, ok := suite.(ModifySuiteConfigHook); ok {
+		suiteCfg = ginkgotypes.SuiteConfig(hook.ModifySuiteConfig(SuiteConfig(suiteCfg)))
 	}
 
 	// modify reporter config
-	if hook, ok := suite.(hooks.ModifyReporterConfigHook); ok {
-		reporterCfg = ginkgotypes.ReporterConfig(hook.ModifyReporterConfig(kinkgotypes.ReporterConfig(reporterCfg)))
+	if hook, ok := suite.(ModifyReporterConfigHook); ok {
+		reporterCfg = ginkgotypes.ReporterConfig(hook.ModifyReporterConfig(ReporterConfig(reporterCfg)))
 	}
 
 	ginkgo.RunSpecs(t, description, ginkgo.Label(cfg.Labels...), suiteCfg, reporterCfg)

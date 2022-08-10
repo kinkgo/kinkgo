@@ -1,4 +1,4 @@
-package types
+package kinkgo
 
 import (
 	ginkgotypes "github.com/onsi/ginkgo/v2/types"
