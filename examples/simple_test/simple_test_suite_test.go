@@ -7,8 +7,6 @@ import (
 	. "github.com/onsi/gomega"
 
 	"github.com/kinkgo/kinkgo"
-	kinkgohooks "github.com/kinkgo/kinkgo/hooks"
-	kinkgotypes "github.com/kinkgo/kinkgo/types"
 )
 
 var (
@@ -16,8 +14,8 @@ var (
 	_ kinkgo.TestSuite = new(SimpleTestSuite)
 
 	// Hooks
-	_ kinkgohooks.ModifySuiteConfigHook    = new(SimpleTestSuite)
-	_ kinkgohooks.ModifyReporterConfigHook = new(SimpleTestSuite)
+	_ kinkgo.ModifySuiteConfigHook    = new(SimpleTestSuite)
+	_ kinkgo.ModifyReporterConfigHook = new(SimpleTestSuite)
 )
 
 func TestSimpleTest(t *testing.T) {
@@ -32,14 +30,14 @@ func TestSimpleTest(t *testing.T) {
 
 type SimpleTestSuite struct{}
 
-func (s *SimpleTestSuite) ModifyReporterConfig(cfg kinkgotypes.ReporterConfig) kinkgotypes.ReporterConfig {
+func (s *SimpleTestSuite) ModifyReporterConfig(cfg kinkgo.ReporterConfig) kinkgo.ReporterConfig {
 	// modify reporter config to use verbose output
 	cfg.Verbose = true
 
 	return cfg
 }
 
-func (s *SimpleTestSuite) ModifySuiteConfig(cfg kinkgotypes.SuiteConfig) kinkgotypes.SuiteConfig {
+func (s *SimpleTestSuite) ModifySuiteConfig(cfg kinkgo.SuiteConfig) kinkgo.SuiteConfig {
 	// modify suite config to skip test has "skip" label
 	cfg.LabelFilter = "!skip"
 
