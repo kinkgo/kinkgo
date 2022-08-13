@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-config-cm
+  namespace: default
+data:
+  key1: value1-from-config-cm
+  key2: value2-from-config-cm
