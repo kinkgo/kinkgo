@@ -1,0 +1,12 @@
+data:
+  key1: value1-from-config-cm
+  key2: value2-from-config-cm
+  list:
+    - item1
+    - item2
+    - item3
+  list-of-map:
+    - key1: value1
+      key2: value2
+    - key1: value3
+      key2: value4
